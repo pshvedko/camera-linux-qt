@@ -1,0 +1,77 @@
+//
+// Created by shved@mail.ru on 27.07.2020.
+//
+
+#ifndef MAIN_WINDOW_H
+#define MAIN_WINDOW_H
+
+#include <QMainWindow>
+#include <QCameraInfo>
+#include <QSystemTrayIcon>
+#include <QCloseEvent>
+#include <QTcpServer>
+#include <QSettings>
+
+#include "ui_main.h"
+#include "Stream.h"
+
+class Camera : public QMainWindow, Ui::MainWindow {
+Q_OBJECT
+
+public:
+
+    explicit Camera(QWidget *parent = nullptr);
+
+    ~Camera() override;
+
+protected:
+
+    void mouseDoubleClickEvent(QMouseEvent *event) override;
+
+    void closeEvent(QCloseEvent *event) override;
+
+    void showEvent(QShowEvent *event) override;
+
+    void hideEvent(QHideEvent *event) override;
+
+    void resizeEvent(QResizeEvent *event) override;
+
+public slots:
+
+    void onCameraState(QCamera::State state);
+
+    void onConnected(int w, int h);
+
+    void onChanged();
+
+    void onNewConnection();
+
+    void onDisconnected();
+
+private slots:
+
+    void toggle(QSystemTrayIcon::ActivationReason reason);
+
+    void quit();
+
+signals:
+
+private:
+
+    QSystemTrayIcon *mTray;
+    QCamera *mCamera;
+    QAction *mHide;
+    QAction *mShow;
+
+    QVideoWidget *mSurfaceNull{};
+    QRect mRect;
+    QString mSecret;
+    QTcpServer *mListener;
+
+    bool mConnected{};
+
+    Stream *mStream{};
+    QSettings *mSettings{};
+};
+
+#endif // MAIN_WINDOW_H
