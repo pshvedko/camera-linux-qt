@@ -108,7 +108,7 @@ Stream::Reader Stream::readPayload() {
             mFrame->recycle();
             break;
         case Frame::Video:
-            mFrame->to(mShow, 4);
+            mFrame->to(mShow);
             break;
         case Frame::Audio | Frame::Control:
             mFrame->recycle();

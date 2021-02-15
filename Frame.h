@@ -23,6 +23,21 @@ public:
         virtual void add(Frame *frame) = 0;
 
         virtual int count() = 0;
+
+        bool locked() {
+            return mLock;
+        }
+
+        void lock() {
+            mLock = true;
+        }
+
+        void unlock() {
+            mLock = false;
+        }
+
+    private:
+        bool mLock{};
     };
 
     class Refer {
