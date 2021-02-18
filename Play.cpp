@@ -33,8 +33,13 @@ void Play::loop(Frame *frame) {
             if (n > 8)
                 return;
             mSkip = false;
+            qDebug("OFF");
         } else if (n > 32) {
             mSkip = true;
+            qDebug("ON");
+        } else if (n < 8) {
+            frame->pool()->stash(8);
+            qDebug("BUFFERING");
         }
         play(buffer, size);
     }

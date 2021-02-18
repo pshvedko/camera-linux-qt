@@ -23,6 +23,8 @@ public:
         virtual void add(Frame *frame) = 0;
 
         virtual int count() = 0;
+
+        virtual void stash(int) = 0;
     };
 
     class Refer {
@@ -62,7 +64,7 @@ public:
 
     void to(Pool *pool);
 
-    Pool * pool() const;
+    Pool *pool() const;
 
     friend QDataStream &operator<<(QDataStream &stream, const Frame &frame);
 

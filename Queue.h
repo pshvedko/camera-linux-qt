@@ -26,6 +26,8 @@ public:
 
     int count() override;
 
+    void stash(int) override;
+
 protected:
 
     void done();
