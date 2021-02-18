@@ -25,7 +25,10 @@ protected:
 private:
 
     OpusDecoder *mCodec{};
+    timespec mTime{};
     int mChannels;
+    int mBuffSize;
+    bool mSkip;
 };
 
 

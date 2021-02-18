@@ -50,18 +50,16 @@ QDataStream &operator<<(QDataStream &stream, const Frame &frame) {
     return stream;
 }
 
-void Frame::to(Frame::Pool *pool, int limit) {
+void Frame::to(Frame::Pool *pool) {
     if (pool) {
-        if (pool->locked()) {
-            if (!pool->count()) pool->unlock();
-        } else if (pool->count() > limit) {
-            pool->lock();
-        } else {
-            pool->add(this);
-            return;
-        }
-    }
-    recycle();
+        pool->add(this);
+        mLoop = pool;
+    } else
+        recycle();
+}
+
+Frame::Pool *Frame::pool() const {
+    return mLoop;
 }
 
 Frame::Re::Re(Frame *frame) {

@@ -9,7 +9,7 @@
 
 Play::Play(const char *device, uint32_t channels, QObject *parent) :
         Loop(parent), Audio(device, 44100, channels, SND_PCM_STREAM_PLAYBACK),
-        mChannels(channels) {
+        mChannels(channels), mBuffSize(16), mSkip(false) {
     int err;
     mCodec = opus_decoder_create(48000, channels, &err);
     if (err != OPUS_OK) {
@@ -20,12 +20,28 @@ Play::Play(const char *device, uint32_t channels, QObject *parent) :
 
 void Play::loop(Frame *frame) {
     Frame::Re re(frame);
+    if (!mCodec)
+        return;
     if (frame->mType != Frame::Audio)
         return;
     signed short buffer[8192 * mChannels];
     int size = opus_decode(mCodec, frame->mBytes.mData, frame->mBytes.mLength, buffer, 8192, 0);
-    if (size > 0)
+    if (size > 0) {
+        auto n = frame->pool()->count();
+        if (mSkip) {
+            if (n > mBuffSize)
+                return;
+            mSkip = false;
+            qDebug("OFF");
+        } else if (n > mBuffSize * 2) {
+            mSkip = true;
+            qDebug("ON");
+        } else if (n < mBuffSize / 2) {
+    	    frame->pool()->stash(mBuffSize); 
+    	    qDebug("BUFFERING");
+        }
         play(buffer, size);
+    }
 }
 
 Play::~Play() {

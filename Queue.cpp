@@ -42,3 +42,14 @@ int Queue::count() {
     QMutexLocker locker(this);
     return size();
 }
+
+void Queue::stash(int n) {
+    QMutexLocker locker(this);
+    if (empty())
+        wait(this);
+    while (n > size()) {
+        if (!back())
+            break;
+        wait(this);
+    }
+}
