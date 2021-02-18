@@ -114,7 +114,7 @@ Stream::Reader Stream::readPayload() {
             mFrame->recycle();
             break;
         case Frame::Audio:
-            mFrame->to(mPlay, 8);
+            mFrame->to(mPlay);
             break;
     }
     mFrame = get();

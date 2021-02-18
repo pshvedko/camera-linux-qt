@@ -23,21 +23,6 @@ public:
         virtual void add(Frame *frame) = 0;
 
         virtual int count() = 0;
-
-        bool locked() {
-            return mLock;
-        }
-
-        void lock() {
-            mLock = true;
-        }
-
-        void unlock() {
-            mLock = false;
-        }
-
-    private:
-        bool mLock{};
     };
 
     class Refer {
@@ -75,7 +60,9 @@ public:
 
     void recycle();
 
-    void to(Pool *pool, int limit = INT_MAX);
+    void to(Pool *pool);
+
+    Pool * pool() const;
 
     friend QDataStream &operator<<(QDataStream &stream, const Frame &frame);
 
@@ -106,6 +93,7 @@ public:
     int mHeight{};
     int mLength{};
 
+    Pool *mLoop{};
 
 private:
 
