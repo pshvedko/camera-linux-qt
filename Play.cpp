@@ -9,7 +9,7 @@
 
 Play::Play(const char *device, uint32_t channels, QObject *parent) :
         Loop(parent), Audio(device, 44100, channels, SND_PCM_STREAM_PLAYBACK),
-        mChannels(channels), mSkip(false) {
+        mChannels(channels), mBuffSize(8), mSkip(false) {
     int err;
     mCodec = opus_decoder_create(48000, channels, &err);
     if (err != OPUS_OK) {
@@ -29,16 +29,17 @@ void Play::loop(Frame *frame) {
     if (size > 0) {
         auto n = frame->pool()->count();
         if (mSkip) {
-            if (n > 8)
+            if (n > mBuffSize)
                 return;
             mSkip = false;
             qDebug("OFF");
-        } else if (n > 32) {
+        } else if (n > mBuffSize * 2) {
             mSkip = true;
             qDebug("ON");
-        } else if (n < 4) {
-            frame->pool()->stash(8);
-            qDebug("BUFFERING");
+        } else if (n < mBuffSize / 2) {
+	    qDebug("BUFFERING %i", mBuffSize);
+            frame->pool()->stash(mBuffSize); 
+	    mBuffSize++;
         }
         play(buffer, size);
     }
