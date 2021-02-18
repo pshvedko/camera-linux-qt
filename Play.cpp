@@ -16,7 +16,6 @@ Play::Play(const char *device, uint32_t channels, QObject *parent) :
         qDebug() << "opus_decoder_create" << opus_strerror(err);
         return;
     }
-    clock_gettime(CLOCK_REALTIME, &mTime);
 }
 
 void Play::loop(Frame *frame) {
@@ -37,7 +36,7 @@ void Play::loop(Frame *frame) {
         } else if (n > 32) {
             mSkip = true;
             qDebug("ON");
-        } else if (n < 8) {
+        } else if (n < 4) {
             frame->pool()->stash(8);
             qDebug("BUFFERING");
         }
