@@ -8,6 +8,8 @@
 
 #include <QDataStream>
 
+class Queue;
+
 class Frame {
 
 public:
@@ -16,15 +18,6 @@ public:
         Video = 0x0,
         Audio = 0x1,
         Control = 0x2,
-    };
-
-    class Pool {
-    public:
-        virtual void add(Frame *frame) = 0;
-
-        virtual int count() = 0;
-
-        virtual void stash(int) = 0;
     };
 
     class Refer {
@@ -56,15 +49,13 @@ public:
         Frame *mFrame;
     };
 
-    explicit Frame(Pool *pool);
+    explicit Frame(Queue *pool);
 
     virtual ~Frame();
 
     void recycle();
 
-    void to(Pool *pool);
-
-    Pool *pool() const;
+    void to(Queue *pool);
 
     friend QDataStream &operator<<(QDataStream &stream, const Frame &frame);
 
@@ -95,11 +86,9 @@ public:
     int mHeight{};
     int mLength{};
 
-    Pool *mLoop{};
-
 private:
 
-    Pool *mPool{};
+    Queue *mPool{};
 
 };
 

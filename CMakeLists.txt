@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.16)
+cmake_minimum_required(VERSION 3.13)
 
 project(camera LANGUAGES CXX)
 
@@ -49,6 +49,7 @@ target_link_libraries(camera PRIVATE
         vpx
         opus
         ALSA::ALSA
-        /usr/local/lib/libyuv.so)
+	yuv
+	jpeg)
 
 qt5_create_translation(QM_FILES ${CMAKE_SOURCE_DIR} ${TS_FILES})

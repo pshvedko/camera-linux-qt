@@ -13,7 +13,7 @@
 
 #include "Frame.h"
 
-class Queue : public Frame::Pool, QMutex, QWaitCondition, QQueue<Frame *> {
+class Queue : public QMutex, QWaitCondition, QQueue<Frame *> {
 public:
 
     virtual ~Queue();
@@ -22,11 +22,11 @@ public:
 
     Frame *get();
 
-    void add(Frame *) override;
+    void add(Frame *);
 
-    int count() override;
+    int count();
 
-    void stash(int) override;
+    void stash(int);
 
 protected:
 

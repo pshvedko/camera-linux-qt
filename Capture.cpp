@@ -23,7 +23,7 @@ Capture::Capture(const char device[], int samples, int channels, QObject *parent
     }
 }
 
-void Capture::loop(Frame *frame) {
+void Capture::loop(Frame *frame, Queue *queue) {
     signed short buffer[mSamples * mChannels];
     if (record(buffer, mSamples)) {
         frame->mId = 0;

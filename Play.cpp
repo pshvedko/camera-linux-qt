@@ -18,7 +18,7 @@ Play::Play(const char *device, uint32_t channels, QObject *parent) :
     }
 }
 
-void Play::loop(Frame *frame) {
+void Play::loop(Frame *frame, Queue *queue) {
     Frame::Re re(frame);
     if (!mCodec)
         return;
@@ -27,18 +27,18 @@ void Play::loop(Frame *frame) {
     signed short buffer[8192 * mChannels];
     int size = opus_decode(mCodec, frame->mBytes.mData, frame->mBytes.mLength, buffer, 8192, 0);
     if (size > 0) {
-        auto n = frame->pool()->count();
+        auto n = queue->count();
         if (mSkip) {
             if (n > mBuffSize)
                 return;
             mSkip = false;
-            qDebug("OFF");
+            qDebug() << __PRETTY_FUNCTION__ << "Drop" << n;
         } else if (n > mBuffSize * 2) {
             mSkip = true;
-            qDebug("ON");
+            qDebug() << __PRETTY_FUNCTION__ << "Play" << n;
         } else if (n < mBuffSize / 2) {
-    	    frame->pool()->stash(mBuffSize); 
-    	    qDebug("BUFFERING");
+            queue->stash(mBuffSize);
+            qDebug() << __PRETTY_FUNCTION__ << "Buffering" << n;
         }
         play(buffer, size);
     }
