@@ -32,10 +32,10 @@ void Play::loop(Frame *frame, Queue *queue) {
             if (n > mBuffSize)
                 return;
             mSkip = false;
-            qDebug() << __PRETTY_FUNCTION__ << "Drop" << n;
+            qDebug() << __PRETTY_FUNCTION__ << "Play" << n;
         } else if (n > mBuffSize * 2) {
             mSkip = true;
-            qDebug() << __PRETTY_FUNCTION__ << "Play" << n;
+            qDebug() << __PRETTY_FUNCTION__ << "Drop" << n;
         } else if (n < mBuffSize / 2) {
             queue->stash(mBuffSize);
             qDebug() << __PRETTY_FUNCTION__ << "Buffering" << n;
