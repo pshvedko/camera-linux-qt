@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.13)
+cmake_minimum_required(VERSION 3.4)
 
 project(camera LANGUAGES CXX)
 
@@ -49,7 +49,7 @@ target_link_libraries(camera PRIVATE
         vpx
         opus
         ALSA::ALSA
-	yuv
-	jpeg)
+        yuv
+        jpeg)
 
 qt5_create_translation(QM_FILES ${CMAKE_SOURCE_DIR} ${TS_FILES})
