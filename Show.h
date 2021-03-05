@@ -21,7 +21,7 @@ public:
 
 protected:
 
-    void loop(Frame *frame) override;
+    void loop(Frame *frame, Queue *queue) override;
 
 private:
 

@@ -5,8 +5,9 @@
 #include <QDebug>
 
 #include "Frame.h"
+#include "Queue.h"
 
-Frame::Frame(Frame::Pool *pool) : mPool(pool) {}
+Frame::Frame(Queue *pool) : mPool(pool) {}
 
 Frame::~Frame() = default;
 
@@ -50,16 +51,11 @@ QDataStream &operator<<(QDataStream &stream, const Frame &frame) {
     return stream;
 }
 
-void Frame::to(Frame::Pool *pool) {
-    if (pool) {
+void Frame::to(Queue *pool) {
+    if (pool)
         pool->add(this);
-        mLoop = pool;
-    } else
+    else
         recycle();
-}
-
-Frame::Pool *Frame::pool() const {
-    return mLoop;
 }
 
 Frame::Re::Re(Frame *frame) {

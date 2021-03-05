@@ -13,7 +13,7 @@ void Loop::run() {
         Frame *frame = pop();
         if (!frame)
             break;
-        loop(frame);
+        loop(frame, this);
     }
 }
 

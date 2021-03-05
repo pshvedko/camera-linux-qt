@@ -43,7 +43,7 @@ Show::~Show() {
     vpx_img_free(&mImage);
 }
 
-void Show::loop(Frame *frame) {
+void Show::loop(Frame *frame, Queue *queue) {
     Frame::Re re(frame);
     if (frame->mType != Frame::Video)
         return;

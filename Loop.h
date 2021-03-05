@@ -21,7 +21,7 @@ public:
 protected:
     void run() override;
 
-    virtual void loop(Frame *frame) = 0;
+    virtual void loop(Frame *frame, Queue *queue) = 0;
 };
 
 
