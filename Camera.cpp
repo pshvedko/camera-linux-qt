@@ -26,8 +26,8 @@ Camera::Camera(QWidget *parent) : QMainWindow(parent) {
     auto *menu = new QMenu(this);
     auto *show = new QAction(tr("Развернуть окно"), this);
     auto *hide = new QAction(tr("Свернуть окно"), this);
-    hide->setDisabled(true);
     auto *quit = new QAction(tr("Выход"), this);
+    hide->setDisabled(true);
     menu->addAction(show);
     menu->addAction(hide);
     menu->addAction(quit);
@@ -198,4 +198,3 @@ void Camera::onCameraState(QCamera::State state) {
             break;
     }
 }
-
