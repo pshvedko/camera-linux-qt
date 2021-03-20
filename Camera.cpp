@@ -102,6 +102,7 @@ void Camera::showEvent(QShowEvent *event) {
     mHide->setEnabled(true);
     mShow->setEnabled(false);
     setGeometry(mRect);
+    setWindowFlag(Qt::WindowStaysOnTopHint, true);
     if (mConnected)
         mCamera->start();
 }
