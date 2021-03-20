@@ -16,6 +16,7 @@
 
 #define SETTINGS_WINDOW_TOP "window/top"
 #define SETTINGS_WINDOW_LEFT "window/left"
+#define SETTINGS_WINDOW_WIDTH "window/width"
 
 Camera::Camera(QWidget *parent) : QMainWindow(parent) {
     setupUi(this);
@@ -48,6 +49,7 @@ Camera::Camera(QWidget *parent) : QMainWindow(parent) {
     mSettings = new QSettings(configDir.filePath("camera.conf"), QSettings::NativeFormat);
     int x = mSettings->value(SETTINGS_WINDOW_TOP, 0).toInt();
     int y = mSettings->value(SETTINGS_WINDOW_LEFT, 0).toInt();
+    mWidth = mSettings->value(SETTINGS_WINDOW_WIDTH, 640).toInt();
     mRect.setTopLeft(QPoint(y, x));
     onDisconnected();
 }
@@ -55,6 +57,7 @@ Camera::Camera(QWidget *parent) : QMainWindow(parent) {
 Camera::~Camera() {
     mSettings->setValue(SETTINGS_WINDOW_TOP, mRect.top());
     mSettings->setValue(SETTINGS_WINDOW_LEFT, mRect.left());
+    mSettings->setValue(SETTINGS_WINDOW_WIDTH, mWidth);
     delete mSettings;
     delete mListener;
     delete mCamera;
@@ -147,10 +150,38 @@ void Camera::onConnected(int w, int h) {
     mCamera->setViewfinder(mSurface);
     if (!isHidden())
         mCamera->start();
+    setSize(w, h);
+}
+
+void Camera::setSize(int w, int h) {
     int d = gcd(w, h);
     int p = w / d;
-    int q = 640 / p;
+    int q = mWidth / p;
     setFixedSize(q * p, q * h / d);
+}
+
+void Camera::keyPressEvent(QKeyEvent *event) {
+    QWidget::keyPressEvent(event);
+}
+
+void Camera::keyReleaseEvent(QKeyEvent *event) {
+    QWidget::keyReleaseEvent(event);
+}
+
+void Camera::wheelEvent(QWheelEvent *event) {
+    QWidget::wheelEvent(event);
+    if (!mConnected)
+        return;
+    if (event->delta() < 0)
+        if (mWidth > 180)
+            mWidth -= 30;
+        else
+            return;
+    else if (mWidth < 720)
+        mWidth += 30;
+    else
+        return;
+    setSize(width(), height());
 }
 
 void Camera::onChanged() {
@@ -199,3 +230,4 @@ void Camera::onCameraState(QCamera::State state) {
             break;
     }
 }
+
