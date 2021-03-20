@@ -173,7 +173,7 @@ void Camera::wheelEvent(QWheelEvent *event) {
     if (!mConnected)
         return;
     if (event->delta() < 0)
-        if (mWidth > 180)
+        if (mWidth > 220)
             mWidth -= 30;
         else
             return;
