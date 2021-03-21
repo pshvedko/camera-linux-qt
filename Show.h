@@ -25,7 +25,6 @@ protected:
 
 private:
 
-    vpx_image_t mImage{};
     vpx_codec_ctx_t mCodec{};
 };
 
