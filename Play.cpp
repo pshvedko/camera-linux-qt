@@ -9,7 +9,7 @@
 
 Play::Play(const char *device, uint32_t channels, QObject *parent) :
         Loop(parent), Audio(device, 44100, channels, SND_PCM_STREAM_PLAYBACK),
-        mChannels(channels), mBuffSize(8), mSkip(false) {
+        mChannels(channels), mBuffSize(16), mSkip(false) {
     int err;
     mCodec = opus_decoder_create(48000, channels, &err);
     if (err != OPUS_OK) {
