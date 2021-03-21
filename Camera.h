@@ -36,6 +36,12 @@ protected:
 
     void resizeEvent(QResizeEvent *event) override;
 
+    void wheelEvent(QWheelEvent *event) override;
+
+    void keyPressEvent(QKeyEvent *event) override;
+
+    void keyReleaseEvent(QKeyEvent *event) override;
+
 public slots:
 
     void onCameraState(QCamera::State state);
@@ -58,6 +64,8 @@ signals:
 
 private:
 
+    void setSize(int w, int h);
+
     QSystemTrayIcon *mTray;
     QCamera *mCamera;
     QAction *mHide;
@@ -72,6 +80,8 @@ private:
 
     Stream *mStream{};
     QSettings *mSettings{};
+
+    int mWidth;
 };
 
 #endif // MAIN_WINDOW_H
