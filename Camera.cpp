@@ -18,20 +18,6 @@
 #define SETTINGS_WINDOW_LEFT "window/left"
 #define SETTINGS_WINDOW_WIDTH "window/width"
 
-class Voice : public QWidget {
-public:
-    explicit Voice(QWidget *parent = nullptr) : QWidget(parent) {}
-
-protected:
-    void paintEvent(QPaintEvent *event) override {
-        QWidget::paintEvent(event);
-    }
-};
-
-void Camera::onVoice(const QByteArray &a) {
-    mVoice->repaint();
-}
-
 Camera::Camera(QWidget *parent) : QMainWindow(parent) {
     setupUi(this);
     const auto ico = QIcon(":/ico.png");
@@ -57,7 +43,7 @@ Camera::Camera(QWidget *parent) : QMainWindow(parent) {
     mCamera = new QCamera(QCameraInfo::defaultCamera());
     connect(mCamera, &QCamera::stateChanged, this, &Camera::onCameraState);
     mListener = new QTcpServer(this);
-    mListener->listen(QHostAddress::Any, 12345);
+    mListener->listen(QHostAddress::Any, 0);
     connect(mListener, &QTcpServer::newConnection, this, &Camera::onNewConnection);
     QDir configDir = QStandardPaths::writableLocation(QStandardPaths::ConfigLocation);
     mSettings = new QSettings(configDir.filePath("camera.conf"), QSettings::NativeFormat);
@@ -66,9 +52,6 @@ Camera::Camera(QWidget *parent) : QMainWindow(parent) {
     mWidth = mSettings->value(SETTINGS_WINDOW_WIDTH, 640).toInt();
     mRect.setTopLeft(QPoint(y, x));
     onDisconnected();
-//    mVoice = new Voice(this);
-//    mVoice->resize(QSize(48, 48));
-//    mVoice->show();
 }
 
 Camera::~Camera() {
@@ -159,10 +142,6 @@ void Camera::onNewConnection() {
     connect(socket, &QTcpSocket::readyRead, mStream, &Stream::onReadyRead);
 }
 
-static inline int gcd(int a, int b) {
-    return b == 0 ? a : gcd(b, a % b);
-}
-
 void Camera::onConnected(int w, int h) {
     mConnected = true;
     mSurface->setCode();
@@ -173,7 +152,11 @@ void Camera::onConnected(int w, int h) {
 }
 
 void Camera::setSize(int w, int h) {
-    int d = gcd(w, h);
+    int a = w;
+    int b = h;
+    while (b)
+        b ^= a ^= b ^= a %= b;
+    int d = a;
     int p = w / d;
     int q = mWidth / p;
     setFixedSize(q * p, q * h / d);
@@ -250,4 +233,4 @@ void Camera::onCameraState(QCamera::State state) {
     }
 }
 
-
+void Camera::onVoice(const QByteArray &) {}

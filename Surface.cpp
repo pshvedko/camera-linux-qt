@@ -4,6 +4,7 @@
 
 #include <QDebug>
 #include <QPainter>
+#include <QCamera>
 
 #include "Surface.h"
 
@@ -50,9 +51,6 @@ void Surface::setCode(const Qr::QrCode &code) {
 
 void Surface::setCode(Qr::QrCode *code) {
     delete mCode;
-    QPalette paint = palette();
-    paint.setColor(QPalette::Background, code ? Qt::white : Qt::transparent);
-    setPalette(paint);
     mCode = code;
     repaint();
 }
@@ -67,9 +65,4 @@ Surface::~Surface() {
     delete mCode;
 }
 
-Surface::Surface(QWidget *parent) : QCameraViewfinder(parent) {
-    setAutoFillBackground(true);
-}
-
-
-
+Surface::Surface(QWidget *parent) : QVideoWidget(parent) {}

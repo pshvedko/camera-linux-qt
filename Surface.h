@@ -5,14 +5,11 @@
 #ifndef CAMERA_VIEW_FINDER_H
 #define CAMERA_VIEW_FINDER_H
 
-#include <QCameraViewfinder>
+#include <QVideoWidget>
 #include "QrCode.h"
 
 
-class Surface : public QCameraViewfinder {
-Q_OBJECT
-
-
+class Surface : public QVideoWidget {
 public:
     explicit Surface(QWidget *parent = nullptr);
 
