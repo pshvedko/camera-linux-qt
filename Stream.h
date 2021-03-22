@@ -26,11 +26,15 @@ signals:
 
     void connected(int width, int height);
 
+    void voice(QByteArray);
+
 public slots:
 
     void onReadyRead();
 
     void onWriteReady(const Frame::Refer& frame);
+
+    void onVoice(const QByteArray&);
 
 protected:
 

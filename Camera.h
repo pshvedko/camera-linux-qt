@@ -71,7 +71,7 @@ private:
     QAction *mHide;
     QAction *mShow;
 
-    QVideoWidget *mSurfaceNull{};
+    QVideoWidget *mDiscard{};
     QRect mRect;
     QString mSecret;
     QTcpServer *mListener;

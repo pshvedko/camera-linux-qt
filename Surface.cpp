@@ -70,3 +70,9 @@ Surface::~Surface() {
 Surface::Surface(QWidget *parent) : QCameraViewfinder(parent) {
     setAutoFillBackground(true);
 }
+
+void Surface::onVoice(const QByteArray&) {
+
+}
+
+

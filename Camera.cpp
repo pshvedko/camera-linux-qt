@@ -136,6 +136,7 @@ void Camera::onNewConnection() {
     mStream = new Stream(socket, this);
     connect(mStream, &Stream::connected, this, &Camera::onConnected);
     connect(mStream, &Stream::changed, this, &Camera::onChanged);
+    connect(mStream, &Stream::voice, mSurface, &Surface::onVoice);
     mStream->start();
     connect(socket, &QTcpSocket::readyRead, mStream, &Stream::onReadyRead);
 }
@@ -215,7 +216,7 @@ void Camera::onDisconnected() {
     if (mCamera->state() == QCamera::UnloadedState)
         return;
     mCamera->unload();
-    mCamera->setViewfinder(mSurfaceNull);
+    mCamera->setViewfinder(mDiscard);
 }
 
 void Camera::onCameraState(QCamera::State state) {

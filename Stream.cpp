@@ -4,6 +4,8 @@
 
 #include "Stream.h"
 
+#include <utility>
+
 #define VIDEO_DEVICE "/dev/video0"
 
 #define AUDIO_DEVICE  "hw:2,1"
@@ -13,6 +15,7 @@ Stream::Stream(QTcpSocket *socket, QObject *parent) :
         mStream(socket), mSocket(socket) {
     connect(this, &Stream::write, this, &Stream::onWriteReady);
     mPlay = new Play(AUDIO_DEVICE, 2, this);
+    connect(mPlay, &Play::voice, this, &Stream::onVoice);
     mPlay->start();
 }
 
@@ -125,4 +128,8 @@ void Stream::onWriteReady(const Frame::Refer &frame) {
     mStream << *frame;
     frame->recycle();
     frame.unref();
+}
+
+void Stream::onVoice(const QByteArray &a) {
+    emit voice(a);
 }

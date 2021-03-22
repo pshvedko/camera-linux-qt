@@ -12,11 +12,17 @@
 #include "Loop.h"
 
 class Play : public Loop, Audio {
+Q_OBJECT
+
 public:
 
     Play(const char *device, uint32_t channels, QObject *parent);
 
     ~Play() override;
+
+signals:
+
+    void voice(QByteArray);
 
 protected:
 
