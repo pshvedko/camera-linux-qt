@@ -21,13 +21,13 @@ find_package(Qt5 COMPONENTS
 
 find_package(ALSA REQUIRED)
 
-#set(TS_FILES camera_ru_RU.ts)
+set(TS_FILES camera_ru_RU.ts)
 
 add_executable(camera
         Camera.cpp
         main.cpp
         main.qrc
-        ${TS_FILES}
+#       ${TS_FILES}
         Surface.cpp
         QJsonWebToken.cpp
         QrCode.cpp

@@ -10,7 +10,6 @@
 #include <QTcpSocket>
 #include <QtCore/QStandardPaths>
 #include <QtCore/QDir>
-#include <QPainter>
 
 #include "Camera.h"
 #include "QJsonWebToken.h"
@@ -40,9 +39,9 @@ Camera::Camera(QWidget *parent) : QMainWindow(parent) {
     mTray = new QSystemTrayIcon(this);
     mTray->setIcon(ico);
     auto *menu = new QMenu(this);
-    auto *show = new QAction(tr("Развернуть окно"), this);
-    auto *hide = new QAction(tr("Свернуть окно"), this);
-    auto *quit = new QAction(tr("Выход"), this);
+    auto *show = new QAction(tr("Maximize"), this);
+    auto *hide = new QAction(tr("Minimize"), this);
+    auto *quit = new QAction(tr("Quit"), this);
     hide->setDisabled(true);
     menu->addAction(show);
     menu->addAction(hide);
@@ -67,10 +66,9 @@ Camera::Camera(QWidget *parent) : QMainWindow(parent) {
     mWidth = mSettings->value(SETTINGS_WINDOW_WIDTH, 640).toInt();
     mRect.setTopLeft(QPoint(y, x));
     onDisconnected();
-
-    mVoice = new Voice(this);
-    mVoice->resize(QSize(48, 48));
-    mVoice->show();
+//    mVoice = new Voice(this);
+//    mVoice->resize(QSize(48, 48));
+//    mVoice->show();
 }
 
 Camera::~Camera() {
