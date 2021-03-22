@@ -27,12 +27,6 @@ public:
 protected:
     void paintEvent(QPaintEvent *event) override;
 
-public slots:
-
-    void onVoice(const QByteArray&);
-
-private slots:
-
 private:
     Qr::QrCode *mCode{};
 };

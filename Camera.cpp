@@ -10,6 +10,7 @@
 #include <QTcpSocket>
 #include <QtCore/QStandardPaths>
 #include <QtCore/QDir>
+#include <QPainter>
 
 #include "Camera.h"
 #include "QJsonWebToken.h"
@@ -17,6 +18,20 @@
 #define SETTINGS_WINDOW_TOP "window/top"
 #define SETTINGS_WINDOW_LEFT "window/left"
 #define SETTINGS_WINDOW_WIDTH "window/width"
+
+class Voice : public QWidget {
+public:
+    explicit Voice(QWidget *parent = nullptr) : QWidget(parent) {}
+
+protected:
+    void paintEvent(QPaintEvent *event) override {
+        QWidget::paintEvent(event);
+    }
+};
+
+void Camera::onVoice(const QByteArray &a) {
+    mVoice->repaint();
+}
 
 Camera::Camera(QWidget *parent) : QMainWindow(parent) {
     setupUi(this);
@@ -52,6 +67,10 @@ Camera::Camera(QWidget *parent) : QMainWindow(parent) {
     mWidth = mSettings->value(SETTINGS_WINDOW_WIDTH, 640).toInt();
     mRect.setTopLeft(QPoint(y, x));
     onDisconnected();
+
+    mVoice = new Voice(this);
+    mVoice->resize(QSize(48, 48));
+    mVoice->show();
 }
 
 Camera::~Camera() {
@@ -61,6 +80,7 @@ Camera::~Camera() {
     delete mSettings;
     delete mListener;
     delete mCamera;
+    delete mVoice;
 }
 
 void Camera::toggle(QSystemTrayIcon::ActivationReason reason) {
@@ -136,7 +156,7 @@ void Camera::onNewConnection() {
     mStream = new Stream(socket, this);
     connect(mStream, &Stream::connected, this, &Camera::onConnected);
     connect(mStream, &Stream::changed, this, &Camera::onChanged);
-    connect(mStream, &Stream::voice, mSurface, &Surface::onVoice);
+    connect(mStream, &Stream::voice, this, &Camera::onVoice);
     mStream->start();
     connect(socket, &QTcpSocket::readyRead, mStream, &Stream::onReadyRead);
 }
@@ -231,4 +251,5 @@ void Camera::onCameraState(QCamera::State state) {
             break;
     }
 }
+
 

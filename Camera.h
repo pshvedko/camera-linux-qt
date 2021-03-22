@@ -54,6 +54,8 @@ public slots:
 
     void onDisconnected();
 
+    void onVoice(const QByteArray &);
+
 private slots:
 
     void toggle(QSystemTrayIcon::ActivationReason reason);
@@ -71,6 +73,7 @@ private:
     QAction *mHide;
     QAction *mShow;
 
+    QWidget *mVoice{};
     QVideoWidget *mDiscard{};
     QRect mRect;
     QString mSecret;
