@@ -152,11 +152,10 @@ void Camera::onConnected(int w, int h) {
 }
 
 void Camera::setSize(int w, int h) {
-    int a = w;
+    int d = w;
     int b = h;
     while (b)
-        b ^= a ^= b ^= a %= b;
-    int d = a;
+        b ^= d ^= b ^= d %= b;
     int p = w / d;
     int q = mWidth / p;
     setFixedSize(q * p, q * h / d);
@@ -174,13 +173,8 @@ void Camera::wheelEvent(QWheelEvent *event) {
     QWidget::wheelEvent(event);
     if (!mConnected)
         return;
-    if (event->delta() < 0)
-        if (mWidth > 220)
-            mWidth -= 30;
-        else
-            return;
-    else if (mWidth < 720)
-        mWidth += 30;
+    if (event->delta() < 0 ? mWidth > 220 : mWidth < 720)
+        mWidth += event->delta() / 4;
     else
         return;
     setSize(width(), height());
