@@ -20,10 +20,11 @@
 
 Camera::Camera(QWidget *parent) : QMainWindow(parent) {
     setupUi(this);
-    const auto ico = QIcon(":/ico.png");
-    setWindowIcon(ico);
+    mIco1 = QIcon(":/ico.png");
+    mIco2 = QIcon(":/ico-red.png");
+    setWindowIcon(mIco1);
     mTray = new QSystemTrayIcon(this);
-    mTray->setIcon(ico);
+    mTray->setIcon(mIco1);
     auto *menu = new QMenu(this);
     auto *show = new QAction(tr("Maximize"), this);
     auto *hide = new QAction(tr("Minimize"), this);
@@ -146,6 +147,7 @@ void Camera::onConnected(int w, int h) {
     mConnected = true;
     mSurface->setCode();
     mCamera->setViewfinder(mSurface);
+    mTray->setIcon(mIco2);
     if (!isHidden())
         mCamera->start();
     setSize(w, h);
@@ -190,6 +192,7 @@ void Camera::onDisconnected() {
     delete mStream;
     mStream = nullptr;
     mConnected = false;
+    mTray->setIcon(mIco1);
     if (!mListener->isListening())
         return;
     QJsonArray hosts;

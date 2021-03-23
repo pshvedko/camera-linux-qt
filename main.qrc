@@ -2,5 +2,7 @@
 <RCC version="1.0">
     <qresource prefix="/">
         <file>ico.png</file>
+        <file>ico-red.png</file>
+        <file>ico-green.png</file>
     </qresource>
 </RCC>

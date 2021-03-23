@@ -85,6 +85,8 @@ private:
     QSettings *mSettings{};
 
     int mWidth;
+    QIcon mIco1;
+    QIcon mIco2;
 };
 
 #endif // MAIN_WINDOW_H
