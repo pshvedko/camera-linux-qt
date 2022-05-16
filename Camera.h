@@ -14,8 +14,9 @@
 
 #include "ui_main.h"
 #include "Stream.h"
+#include "Pulse.h"
 
-class Camera : public QMainWindow, Ui::MainWindow {
+class Camera : public QMainWindow, Ui::MainWindow, Pulse {
 Q_OBJECT
 
 public:
@@ -68,12 +69,14 @@ private:
 
     void setSize(int w, int h);
 
+    QIcon mIco1;
+    QIcon mIco2;
+
     QSystemTrayIcon *mTray;
     QCamera *mCamera;
     QAction *mHide;
     QAction *mShow;
 
-    QWidget *mVoice{};
     QVideoWidget *mDiscard{};
     QRect mRect;
     QString mSecret;
@@ -85,8 +88,6 @@ private:
     QSettings *mSettings{};
 
     int mWidth;
-    QIcon mIco1;
-    QIcon mIco2;
 };
 
 #endif // MAIN_WINDOW_H

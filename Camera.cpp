@@ -2,8 +2,12 @@
 // Created by shved@mail.ru on 27.07.2020.
 //
 
+#include <iostream>
+
 #include <QSystemTrayIcon>
 #include <QMenu>
+#include <QMenuBar>
+#include <QStatusBar>
 #include <QHostAddress>
 #include <QJsonArray>
 #include <QNetworkInterface>
@@ -53,6 +57,8 @@ Camera::Camera(QWidget *parent) : QMainWindow(parent) {
     mWidth = mSettings->value(SETTINGS_WINDOW_WIDTH, 640).toInt();
     mRect.setTopLeft(QPoint(y, x));
     onDisconnected();
+    availableSinks();
+
 }
 
 Camera::~Camera() {
@@ -62,7 +68,6 @@ Camera::~Camera() {
     delete mSettings;
     delete mListener;
     delete mCamera;
-    delete mVoice;
 }
 
 void Camera::toggle(QSystemTrayIcon::ActivationReason reason) {
@@ -196,7 +201,7 @@ void Camera::onDisconnected() {
     if (!mListener->isListening())
         return;
     QJsonArray hosts;
-    for (const auto &a : QNetworkInterface::allAddresses())
+    for (const auto &a: QNetworkInterface::allAddresses())
         if (a.isGlobal() && a.protocol() == QAbstractSocket::IPv4Protocol)
             hosts.append(a.toString());
     QJsonWebToken token;

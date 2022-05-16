@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.4)
 
 project(camera LANGUAGES CXX)
 
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(CMAKE_AUTOMOC ON)
@@ -39,7 +39,8 @@ add_executable(camera
         Stream.cpp
         Audio.cpp
         Play.cpp
-        Video.cpp)
+        Video.cpp
+        Pulse.cpp)
 
 target_link_libraries(camera PRIVATE
         Qt5::Widgets
@@ -49,6 +50,7 @@ target_link_libraries(camera PRIVATE
         vpx
         opus
         ALSA::ALSA
+        pulse
         yuv
         jpeg)
 

@@ -4,7 +4,7 @@
 // http://equalarea.com/paul/alsa-audio.html
 // arecord -D hw:2,1 -f S16_LE -r 44100 -c 2 | aplay -D hw:0,0
 //
-// pactl list short sinks
+// pactl availableSinks short sinks
 // pactl set-default-sink 0
 
 #include <QDebug>

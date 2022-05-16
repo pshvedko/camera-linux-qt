@@ -40,7 +40,6 @@ void Play::loop(Frame *frame, Queue *queue) {
             queue->stash(mBuffSize);
             qDebug() << __PRETTY_FUNCTION__ << "Buffering" << n;
         }
-        emit voice(QByteArray(256, 0));
         play(buffer, size);
     }
 }
