@@ -15,7 +15,7 @@ public:
 
     explicit operator pa_mainloop *() const { return mLoop; }
 
-    void Do(pa_context *pContext);
+    void call(pa_context *c);
 
 protected:
     void availableSinks();

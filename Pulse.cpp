@@ -19,7 +19,7 @@ static void perform_callback(pa_context *c, Pulse *a) {
         case PA_CONTEXT_SETTING_NAME:
             break;
         case PA_CONTEXT_READY:
-            a->Do(c);
+            a->call(c);
             break;
         case PA_CONTEXT_FAILED:
         case PA_CONTEXT_TERMINATED:
@@ -99,6 +99,6 @@ Pulse::~Pulse() {
     pa_mainloop_free(mLoop);
 }
 
-void Pulse::Do(pa_context *c) {
+void Pulse::call(pa_context *c) {
     mCall(c, this);
 }
