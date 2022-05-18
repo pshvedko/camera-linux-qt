@@ -33,15 +33,20 @@ Camera::Camera(QWidget *parent) : QMainWindow(parent) {
     auto *show = new QAction(tr("Maximize"), this);
     auto *hide = new QAction(tr("Minimize"), this);
     auto *quit = new QAction(tr("Quit"), this);
+    auto *drop = new QAction(tr("Disconnect"), this);
     hide->setDisabled(true);
+    drop->setVisible(false);
     menu->addAction(show);
     menu->addAction(hide);
     menu->addAction(quit);
+    menu->addAction(drop);
     connect(show, &QAction::triggered, this, &Camera::show);
     connect(hide, &QAction::triggered, this, &Camera::hide);
     connect(quit, &QAction::triggered, this, &Camera::quit);
+    connect(drop, &QAction::triggered, this, &Camera::drop);
     mHide = hide;
     mShow = show;
+    mDrop = drop;
     mTray->setContextMenu(menu);
     mTray->show();
     connect(mTray, &QSystemTrayIcon::activated, this, &Camera::toggle);
@@ -57,8 +62,6 @@ Camera::Camera(QWidget *parent) : QMainWindow(parent) {
     mWidth = mSettings->value(SETTINGS_WINDOW_WIDTH, 640).toInt();
     mRect.setTopLeft(QPoint(y, x));
     onDisconnected();
-    availableSinks();
-
 }
 
 Camera::~Camera() {
@@ -98,6 +101,10 @@ void Camera::closeEvent(QCloseEvent *event) {
     if (isVisible())
         event->ignore();
     hide();
+}
+
+void Camera::drop() {
+    mStream->close();
 }
 
 void Camera::quit() {
@@ -153,6 +160,7 @@ void Camera::onConnected(int w, int h) {
     mSurface->setCode();
     mCamera->setViewfinder(mSurface);
     mTray->setIcon(mIco2);
+    mDrop->setVisible(true);
     if (!isHidden())
         mCamera->start();
     setSize(w, h);
@@ -198,6 +206,7 @@ void Camera::onDisconnected() {
     mStream = nullptr;
     mConnected = false;
     mTray->setIcon(mIco1);
+    mDrop->setVisible(false);
     if (!mListener->isListening())
         return;
     QJsonArray hosts;

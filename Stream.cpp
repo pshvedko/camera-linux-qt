@@ -133,3 +133,7 @@ void Stream::onWriteReady(const Frame::Refer &frame) {
 void Stream::onVoice(const QByteArray &a) {
     emit voice(a);
 }
+
+void Stream::close() {
+    mSocket->close();
+}

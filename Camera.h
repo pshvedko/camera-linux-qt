@@ -63,6 +63,8 @@ private slots:
 
     void quit();
 
+    void drop();
+
 signals:
 
 private:
@@ -76,6 +78,7 @@ private:
     QCamera *mCamera;
     QAction *mHide;
     QAction *mShow;
+    QAction *mDrop;
 
     QVideoWidget *mDiscard{};
     QRect mRect;

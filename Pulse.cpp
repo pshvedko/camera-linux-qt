@@ -39,7 +39,7 @@ void Pulse::perform(pa_context_notify_cb_t f) {
     }
 }
 
-static void get_sink_info_list_callback(pa_context *c, const pa_sink_info *i, int is_last, Pulse *a) {
+static void get_sink_info_list_callback(pa_context *c, const pa_sink_info *i, int is_last, void *a) {
     if (is_last)
         return pa_context_disconnect(c);
     static std::map<int, const char *> pa_sink_state_name = {
@@ -76,15 +76,26 @@ static void get_sink_info_list_callback(pa_context *c, const pa_sink_info *i, in
 
 }
 
-static void get_sink_info_list(pa_context *c, Pulse *a) {
+static void get_sink_info_list(pa_context *c, void *a) {
     pa_operation *o = pa_context_get_sink_info_list(
-            c, reinterpret_cast<pa_sink_info_cb_t>(get_sink_info_list_callback), a);
+            c, get_sink_info_list_callback, a);
+    if (o)
+        pa_operation_unref(o);
+}
+
+static void get_card_info_list(pa_context *c, void *a) {
+    pa_operation *o = pa_context_get_card_info_list(
+            c, [](pa_context *c, const pa_card_info *i, int eol, void *a) {
+                if (eol)
+                    return pa_context_disconnect(c);
+            }, a);
     if (o)
         pa_operation_unref(o);
 }
 
 void Pulse::availableSinks() {
-    perform(reinterpret_cast<pa_context_notify_cb_t>(get_sink_info_list));
+//    perform(get_sink_info_list);
+//    perform(reinterpret_cast<pa_context_notify_cb_t>(get_card_info_list));
 }
 
 // action = SET_DEFAULT_SINK;

@@ -20,6 +20,8 @@ public:
 
     ~Stream() override;
 
+    void close();
+
 signals:
 
     void changed();
