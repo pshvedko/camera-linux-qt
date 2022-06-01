@@ -4,5 +4,6 @@
         <file>ico.png</file>
         <file>ico-red.png</file>
         <file>ico-green.png</file>
+        <file>ico-cancel.png</file>
     </qresource>
 </RCC>

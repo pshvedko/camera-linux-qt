@@ -11,12 +11,13 @@
 #include <QCloseEvent>
 #include <QTcpServer>
 #include <QSettings>
+#include <QAudioDeviceInfo>
 
 #include "ui_main.h"
 #include "Stream.h"
-#include "Pulse.h"
+#include "QAudioInfo.h"
 
-class Camera : public QMainWindow, Ui::MainWindow, Pulse {
+class Camera : public QMainWindow, QCameraInfo, QAudioDeviceInfo, QAudioInfo, Ui::MainWindow {
 Q_OBJECT
 
 public:
@@ -47,7 +48,7 @@ public slots:
 
     void onCameraState(QCamera::State state);
 
-    void onConnected(int w, int h);
+    void onConnected(int ip, int h);
 
     void onChanged();
 

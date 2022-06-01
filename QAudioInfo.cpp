@@ -7,34 +7,40 @@
 // pactl set-default-sink 1
 //
 
+#include <QAudioDeviceInfo>
 #include <QDebug>
 
-#include "Pulse.h"
+#include <QDebug>
 
-static void perform_callback(pa_context *c, Pulse *a) {
+#include "QAudioInfo.h"
+
+static void perform_callback(pa_context *c, void *a) {
     pa_context_state_t s = pa_context_get_state(c);
+    void **b = (void **) a;
+    auto f = (pa_context_notify_cb_t *) (b[1]);
+    auto m = (pa_mainloop *) b[0];
     switch (s) {
         case PA_CONTEXT_CONNECTING:
         case PA_CONTEXT_AUTHORIZING:
         case PA_CONTEXT_SETTING_NAME:
             break;
         case PA_CONTEXT_READY:
-            a->call(c);
+            (*f)(c, b[2]);
             break;
         case PA_CONTEXT_FAILED:
         case PA_CONTEXT_TERMINATED:
         default:
-            pa_mainloop_quit(a->operator pa_mainloop *(), s);
+            pa_mainloop_quit(m, s);
     }
 }
 
-void Pulse::perform(pa_context_notify_cb_t f) {
-    pa_context *c = pa_context_new(pa_mainloop_get_api(mLoop), nullptr);
+void perform(pa_mainloop *m, pa_context_notify_cb_t f, void *a) {
+    pa_context *c = pa_context_new(pa_mainloop_get_api(m), nullptr);
     if (c) {
-        mCall = f;
-        pa_context_set_state_callback(c, reinterpret_cast<pa_context_notify_cb_t>(perform_callback), this);
+        void *arg[]{m, &f, a};
+        pa_context_set_state_callback(c, perform_callback, arg);
         if (pa_context_connect(c, nullptr, PA_CONTEXT_NOFLAGS, nullptr) == 0)
-            pa_mainloop_run(mLoop, nullptr);
+            pa_mainloop_run(m, nullptr);
         pa_context_unref(c);
     }
 }
@@ -83,33 +89,31 @@ static void get_sink_info_list(pa_context *c, void *a) {
         pa_operation_unref(o);
 }
 
+static void get_card_info_list_cb(pa_context *c, const pa_card_info *i, int is_last, void *a) {
+    if (is_last)
+        return pa_context_disconnect(c);
+}
+
 static void get_card_info_list(pa_context *c, void *a) {
     pa_operation *o = pa_context_get_card_info_list(
-            c, [](pa_context *c, const pa_card_info *i, int eol, void *a) {
-                if (eol)
-                    return pa_context_disconnect(c);
-            }, a);
+            c, get_card_info_list_cb, a);
     if (o)
         pa_operation_unref(o);
 }
 
-void Pulse::availableSinks() {
-//    perform(get_sink_info_list);
-//    perform(reinterpret_cast<pa_context_notify_cb_t>(get_card_info_list));
+QList<QAudioInfo> QAudioInfo::availableSinks() {
+    QList<QAudioInfo> a;
+    pa_mainloop *m = pa_mainloop_new();
+    perform(m, get_sink_info_list, &a);
+//    perform(m, get_card_info_list, &a);
+    pa_mainloop_free(m);
+    qDebug() << QAudioDeviceInfo::defaultInputDevice().deviceName();
+    qDebug() << QAudioDeviceInfo::defaultOutputDevice().deviceName();
+    return a;
 }
 
 // action = SET_DEFAULT_SINK;
 // sink_name = 1
-void Pulse::setSink(int id) {
+void QAudioInfo::setSink(int id) {
 
-}
-
-Pulse::Pulse() : mLoop(pa_mainloop_new()) {}
-
-Pulse::~Pulse() {
-    pa_mainloop_free(mLoop);
-}
-
-void Pulse::call(pa_context *c) {
-    mCall(c, this);
 }

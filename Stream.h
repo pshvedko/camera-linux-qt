@@ -7,10 +7,15 @@
 
 #include <QTcpSocket>
 #include <QDataStream>
+#include <QHostAddress>
 
 #include "Capture.h"
 #include "Show.h"
 #include "Play.h"
+
+#define VIDEO_DEVICE "/dev/video2"
+
+#define AUDIO_DEVICE  "hw:3,1"
 
 class Stream : public Capture {
 Q_OBJECT
@@ -21,6 +26,10 @@ public:
     ~Stream() override;
 
     void close();
+
+    auto peerAddress() const { return mSocket->peerAddress(); }
+
+    auto peerPort() { return mSocket->peerPort(); }
 
 signals:
 
@@ -34,9 +43,9 @@ public slots:
 
     void onReadyRead();
 
-    void onWriteReady(const Frame::Refer& frame);
+    void onWriteReady(const Frame::Refer &frame);
 
-    void onVoice(const QByteArray&);
+    void onVoice(const QByteArray &);
 
 protected:
 

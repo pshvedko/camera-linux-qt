@@ -33,8 +33,10 @@ Camera::Camera(QWidget *parent) : QMainWindow(parent) {
     auto *show = new QAction(tr("Maximize"), this);
     auto *hide = new QAction(tr("Minimize"), this);
     auto *quit = new QAction(tr("Quit"), this);
-    auto *drop = new QAction(tr("Disconnect"), this);
+    auto *drop = new QAction(this);
     hide->setDisabled(true);
+    auto icoCancel = QIcon(":/ico-cancel.png");
+    drop->setIcon(icoCancel);
     drop->setVisible(false);
     menu->addAction(show);
     menu->addAction(hide);
@@ -50,7 +52,7 @@ Camera::Camera(QWidget *parent) : QMainWindow(parent) {
     mTray->setContextMenu(menu);
     mTray->show();
     connect(mTray, &QSystemTrayIcon::activated, this, &Camera::toggle);
-    mCamera = new QCamera(QCameraInfo::defaultCamera());
+    mCamera = new QCamera(VIDEO_DEVICE);
     connect(mCamera, &QCamera::stateChanged, this, &Camera::onCameraState);
     mListener = new QTcpServer(this);
     mListener->listen(QHostAddress::Any, 0);
@@ -62,6 +64,9 @@ Camera::Camera(QWidget *parent) : QMainWindow(parent) {
     mWidth = mSettings->value(SETTINGS_WINDOW_WIDTH, 640).toInt();
     mRect.setTopLeft(QPoint(y, x));
     onDisconnected();
+
+    availableSinks();
+    qDebug() << availableCameras();
 }
 
 Camera::~Camera() {
@@ -161,6 +166,15 @@ void Camera::onConnected(int w, int h) {
     mCamera->setViewfinder(mSurface);
     mTray->setIcon(mIco2);
     mDrop->setVisible(true);
+    mDrop->setText([](QHostAddress ip) {
+        bool ok = false;
+        QHostAddress ipv4(ip.toIPv4Address(&ok));
+        if (ok) {
+            ip = ipv4;
+        }
+        return ip.toString();
+    }(mStream->peerAddress()));
+    qDebug() << __PRETTY_FUNCTION__ << mDrop->text();
     if (!isHidden())
         mCamera->start();
     setSize(w, h);

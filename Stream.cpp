@@ -4,12 +4,6 @@
 
 #include "Stream.h"
 
-#include <utility>
-
-#define VIDEO_DEVICE "/dev/video0"
-
-#define AUDIO_DEVICE  "hw:2,1"
-
 Stream::Stream(QTcpSocket *socket, QObject *parent) :
         Capture(AUDIO_DEVICE, 480, 2, parent),
         mStream(socket), mSocket(socket) {

@@ -40,7 +40,7 @@ add_executable(camera
         Audio.cpp
         Play.cpp
         Video.cpp
-        Pulse.cpp)
+        QAudioInfo.cpp)
 
 target_link_libraries(camera PRIVATE
         Qt5::Widgets

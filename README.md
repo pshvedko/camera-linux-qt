@@ -3,6 +3,7 @@
 ### dependencies 
 ```
 sudo apt-get install qtbase5-dev qtmultimedia5-dev qttools5-dev 
+sudo apt-get install libqt5multimedia5-plugins
 sudo apt-get install libasound2-dev libpulse-dev libopus-dev libvpx-dev libjpeg-dev
 sudo apt-get install v4l2loopback-dkms
 ```
